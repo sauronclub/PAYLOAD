@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-FANZA PAYLOAD 捕获工具
+PAYLOAD 捕获工具
 
 功能：
 1. 捕获单影片详情页的 GraphQL PAYLOAD (ContentPageData)
