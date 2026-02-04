@@ -65,4 +65,7 @@ jobs:
           git add PAYLOAD/
           timestamp=$(date +%Y-%m-%d_%H-%M-%S)
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty || true
-          git push || true
+          
+          # 先pull再push，解决远程有更新导致的reject
+          git pull origin main --rebase || true
+          git push origin main || true
