@@ -89,8 +89,6 @@ jobs:
           git status -sb
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty
           
-          # 先pull再push，解决远程有更新导致的reject
-          git pull origin main --rebase
+          # 先pull再push，解决远程有更新导致的reject（优先保留本次生成结果）
+          git pull origin main --rebase --strategy=recursive -X ours
           git push origin main
-
-
