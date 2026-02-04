@@ -85,10 +85,17 @@ jobs:
           # 调试：确认文件存在
           ls -la PAYLOAD/ LOGS/
           
+          # 基于远端最新提交，避免 rebase 冲突
+          tmp_dir=$(mktemp -d)
+          cp -a PAYLOAD "$tmp_dir"/PAYLOAD 2>/dev/null || true
+          cp -a LOGS "$tmp_dir"/LOGS 2>/dev/null || true
+          git fetch origin main
+          git reset --hard origin/main
+          rm -rf PAYLOAD LOGS
+          cp -a "$tmp_dir"/PAYLOAD PAYLOAD 2>/dev/null || true
+          cp -a "$tmp_dir"/LOGS LOGS 2>/dev/null || true
+          
           git add LOGS/ PAYLOAD/
           git status -sb
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty
-          
-          # 先pull再push，解决远程有更新导致的reject（优先保留本次生成结果）
-          git pull origin main --rebase --strategy=recursive -X ours
           git push origin main
