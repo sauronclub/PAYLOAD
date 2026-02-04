@@ -53,17 +53,36 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update PAYLOAD files
+      - name: Update PAYLOAD and LOGS files
         run: |
-          # 确保PAYLOAD目录存在
-          mkdir -p PAYLOAD
+          # 确保目录存在
+          mkdir -p PAYLOAD LOGS
           
-          # 强制更新文件修改时间，确保每次运行都有记录
-          touch PAYLOAD/PAYLOAD_ID.json
-          touch PAYLOAD/PAYLOAD_ACTRESS.json
-          
-          git add PAYLOAD/
+          # 强制更新 JSON 内容，确保文件在仓库中有更新记录
           timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+          export RUN_TIMESTAMP="$timestamp"
+          python - <<'PY'
+          import json
+          import os
+          
+          ts = os.environ.get("RUN_TIMESTAMP")
+          for path in ["PAYLOAD/PAYLOAD_ID.json", "PAYLOAD/PAYLOAD_ACTRESS.json"]:
+              if not os.path.exists(path):
+                  continue
+              try:
+                  with open(path, "r", encoding="utf-8") as f:
+                      data = json.load(f)
+              except Exception:
+                  continue
+              data["__updated_at"] = ts
+              with open(path, "w", encoding="utf-8") as f:
+                  json.dump(data, f, indent=2, ensure_ascii=False)
+          PY
+          
+          # 调试：确认文件存在
+          ls -la PAYLOAD/ LOGS/
+          
+          git add LOGS/ PAYLOAD/
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty || true
           
           # 先pull再push，解决远程有更新导致的reject
