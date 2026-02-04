@@ -86,9 +86,11 @@ jobs:
           ls -la PAYLOAD/ LOGS/
           
           git add LOGS/ PAYLOAD/
-          git commit -m "Update PAYLOAD: $timestamp" --allow-empty || true
+          git status -sb
+          git commit -m "Update PAYLOAD: $timestamp" --allow-empty
           
           # 先pull再push，解决远程有更新导致的reject
-          git pull origin main --rebase || true
-          git push origin main || true
+          git pull origin main --rebase
+          git push origin main
+
 
