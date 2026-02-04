@@ -53,49 +53,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update PAYLOAD and LOGS files
+      - name: Update PAYLOAD files
         run: |
           # 确保目录存在
-          mkdir -p PAYLOAD LOGS
+          mkdir -p PAYLOAD
           
-          # 清理 30 天前的日志文件（按修改时间）
-          find LOGS -type f -mtime +30 -print -delete || true
-          
-          # 强制更新 JSON 内容，确保文件在仓库中有更新记录
           timestamp=$(date +%Y-%m-%d_%H-%M-%S)
-          export RUN_TIMESTAMP="$timestamp"
-          python - <<'PY'
-          import json
-          import os
-          
-          ts = os.environ.get("RUN_TIMESTAMP")
-          for path in ["PAYLOAD/PAYLOAD_ID.json", "PAYLOAD/PAYLOAD_ACTRESS.json"]:
-              if not os.path.exists(path):
-                  continue
-              try:
-                  with open(path, "r", encoding="utf-8") as f:
-                      data = json.load(f)
-              except Exception:
-                  continue
-              data["__updated_at"] = ts
-              with open(path, "w", encoding="utf-8") as f:
-                  json.dump(data, f, indent=2, ensure_ascii=False)
-          PY
-          
+
           # 调试：确认文件存在
-          ls -la PAYLOAD/ LOGS/
+          ls -la PAYLOAD/
           
-          # 基于远端最新提交，避免 rebase 冲突
+          # 基于远端最新提交，避免冲突
           tmp_dir=$(mktemp -d)
           cp -a PAYLOAD "$tmp_dir"/PAYLOAD 2>/dev/null || true
-          cp -a LOGS "$tmp_dir"/LOGS 2>/dev/null || true
           git fetch origin main
           git reset --hard origin/main
-          rm -rf PAYLOAD LOGS
+          rm -rf PAYLOAD
           cp -a "$tmp_dir"/PAYLOAD PAYLOAD 2>/dev/null || true
-          cp -a "$tmp_dir"/LOGS LOGS 2>/dev/null || true
           
-          git add LOGS/ PAYLOAD/
+          git add PAYLOAD/
           git status -sb
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty
           git push origin main
+
