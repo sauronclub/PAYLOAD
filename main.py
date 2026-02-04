@@ -16,8 +16,9 @@ import os
 import time
 import argparse
 import logging
-from datetime import datetime
+from typing import Any, cast
 from playwright.sync_api import sync_playwright
+
 from config import (
     TYPE_ID_URL,
     TYPE_ACTRESS_URL,
@@ -33,25 +34,14 @@ from config import (
 
 BASE_DIR = os.path.dirname(__file__)
 PAYLOAD_DIR = os.path.join(BASE_DIR, "PAYLOAD")
-LOGS_DIR = os.path.join(BASE_DIR, "LOGS")
 
 os.makedirs(PAYLOAD_DIR, exist_ok=True)
-os.makedirs(LOGS_DIR, exist_ok=True)
 
 
 def setup_logger():
-    """配置日志系统"""
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    log_file = os.path.join(LOGS_DIR, f"{timestamp}.log")
-
+    """配置日志系统（仅控制台输出，不写入文件）"""
     logger = logging.getLogger("fanza_payload")
     logger.setLevel(logging.INFO)
-
-    # 文件处理器
-    file_handler = logging.FileHandler(log_file, encoding="utf-8")
-    file_handler.setLevel(logging.INFO)
-    file_format = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
-    file_handler.setFormatter(file_format)
 
     # 控制台处理器
     console_handler = logging.StreamHandler()
@@ -59,10 +49,11 @@ def setup_logger():
     console_format = logging.Formatter("%(message)s")
     console_handler.setFormatter(console_format)
 
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+    if not logger.handlers:
+        logger.addHandler(console_handler)
 
-    return logger, log_file
+    return logger
+
 
 
 def _handle_age_check(page, logger):
@@ -288,11 +279,14 @@ def capture_actress_payload(actress_id, offset, limit, logger):
                         payload_request["variables"]["limit"] = limit
                         filter_data = payload_request["variables"].get("filter", {})
                         if isinstance(filter_data, dict):
-                            actress_ids = filter_data.get("actressIds", {})
-                            if isinstance(actress_ids, dict) and "ids" in actress_ids:
-                                for item in actress_ids["ids"]:
+                            actress_ids = cast(dict[str, Any], filter_data.get("actressIds", {}))
+                            ids_list = actress_ids.get("ids", [])
+                            if isinstance(ids_list, list):
+                                for item in ids_list:
                                     if isinstance(item, dict) and "id" in item:
                                         item["id"] = ""
+
+
 
                     output_file = os.path.join(PAYLOAD_DIR, "PAYLOAD_ACTRESS.json")
                     with open(output_file, "w", encoding="utf-8") as f:
@@ -327,9 +321,16 @@ def main():
     parser.add_argument('--limit', type=int, default=120, help='演员搜索每页数量')
     args = parser.parse_args()
 
+    # 每次运行先删除旧的 PAYLOAD 文件
+    for filename in ["PAYLOAD_ID.json", "PAYLOAD_ACTRESS.json"]:
+        path = os.path.join(PAYLOAD_DIR, filename)
+        if os.path.exists(path):
+            os.remove(path)
+
     # 初始化日志
-    logger, log_file = setup_logger()
+    logger = setup_logger()
     start_time = time.time()
+
 
     logger.info("=" * 50)
     logger.info("FANZA PAYLOAD 捕获工具启动")
@@ -346,8 +347,8 @@ def main():
     # 完成
     logger.info("=" * 50)
     logger.info("执行完成")
-    logger.info(f"日志文件: {log_file}")
     logger.info("=" * 50)
+
 
     return result1 is not None and result2 is not None
 
