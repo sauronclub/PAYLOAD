@@ -58,6 +58,9 @@ jobs:
           # 确保目录存在
           mkdir -p PAYLOAD LOGS
           
+          # 清理 30 天前的日志文件（按修改时间）
+          find LOGS -type f -mtime +30 -print -delete || true
+          
           # 强制更新 JSON 内容，确保文件在仓库中有更新记录
           timestamp=$(date +%Y-%m-%d_%H-%M-%S)
           export RUN_TIMESTAMP="$timestamp"
@@ -88,3 +91,4 @@ jobs:
           # 先pull再push，解决远程有更新导致的reject
           git pull origin main --rebase || true
           git push origin main || true
+
