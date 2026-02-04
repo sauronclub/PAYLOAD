@@ -1,0 +1,68 @@
+name: PAYLOAD
+
+on:
+  schedule:
+    - cron: '0 16 * * *'  # 东京时间 01:00 运行
+  workflow_dispatch:
+    inputs:
+      video_cid:
+        description: 'Video CID (optional)'
+        required: false
+        default: 'ipzz00780'
+      actress_id:
+        description: 'Actress ID (optional)'
+        required: false
+        default: '1044099'
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+
+      - name: Capture PAYLOAD
+        env:
+          TYPE_ID_URL: ${{ secrets.TYPE_ID_URL }}
+          TYPE_ACTRESS_URL: ${{ secrets.TYPE_ACTRESS_URL }}
+          GRAPHQL_API_URL: ${{ secrets.GRAPHQL_API_URL }}
+          HEADER_KEY: ${{ secrets.HEADER_KEY }}
+          HEADER_VALUE: ${{ secrets.HEADER_VALUE }}
+        run: |
+          if [ -n "${{ github.event.inputs.video_cid }}" ]; then
+            python main.py --cid ${{ github.event.inputs.video_cid }} --actress ${{ github.event.inputs.actress_id }}
+          else
+            python main.py
+          fi
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update PAYLOAD files
+        run: |
+          # 确保PAYLOAD目录存在
+          mkdir -p PAYLOAD
+          
+          # 强制更新文件修改时间，确保每次运行都有记录
+          touch PAYLOAD/PAYLOAD_ID.json
+          touch PAYLOAD/PAYLOAD_ACTRESS.json
+          
+          git add PAYLOAD/
+          timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+          git commit -m "Update PAYLOAD: $timestamp" --allow-empty || true
+          git push || true
