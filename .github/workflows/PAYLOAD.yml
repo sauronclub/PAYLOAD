@@ -2,7 +2,8 @@ name: PAYLOAD
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # 东京时间 01:00 运行
+  # GitHub Actions 运行时间为 UTC 时间，东京时间为 UTC+9，东京时间每天凌晨1点运行此程序
+    - cron: '0 16 * * *'
   workflow_dispatch:
 
 permissions:
@@ -39,8 +40,6 @@ jobs:
           GRAPHQL_API_URL: ${{ secrets.GRAPHQL_API_URL }}
           HEADER_KEY: ${{ secrets.HEADER_KEY }}
           HEADER_VALUE: ${{ secrets.HEADER_VALUE }}
-          actress_id: ${{ secrets.ACTRESS_ID }}
-          cid: ${{ secrets.CID }}
         run: |
           python main.py
 
@@ -51,15 +50,12 @@ jobs:
 
       - name: Update PAYLOAD files
         run: |
-          # 确保目录存在
           mkdir -p PAYLOAD
           
           timestamp=$(date +%Y-%m-%d_%H-%M-%S)
 
-          # 调试：确认文件存在
           ls -la PAYLOAD/
           
-          # 基于远端最新提交，避免冲突
           tmp_dir=$(mktemp -d)
           cp -a PAYLOAD "$tmp_dir"/PAYLOAD 2>/dev/null || true
           git fetch origin main
@@ -71,4 +67,3 @@ jobs:
           git status -sb
           git commit -m "Update PAYLOAD: $timestamp" --allow-empty
           git push origin main
-
