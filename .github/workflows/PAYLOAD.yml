@@ -32,6 +32,7 @@ jobs:
           TYPE_ACTRESS_URL: ${{ secrets.TYPE_ACTRESS_URL }}
           TYPE_REALTIME_URL: ${{ secrets.TYPE_REALTIME_URL }}
           TYPE_REALTIME_VR_URL: ${{ secrets.TYPE_REALTIME_VR_URL }}
+          TYPE_DATE_URL: ${{ secrets.TYPE_DATE_URL }}
           TYPE_DAILY_URL: ${{ secrets.TYPE_DAILY_URL }}
           TYPE_WEEKLY_URL: ${{ secrets.TYPE_WEEKLY_URL }}
           TYPE_MONTHLY_URL: ${{ secrets.TYPE_MONTHLY_URL }}
