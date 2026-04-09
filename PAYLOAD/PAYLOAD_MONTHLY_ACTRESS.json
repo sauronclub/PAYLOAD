@@ -1,14 +1,15 @@
 {
   "operationName": "ActressRankingPage",
-  "query": "query ActressRankingPage($limit: Int!, $offset: Int, $filter: PPVActressRankingFilterInput!, $isLoggedIn: Boolean!) {\n  ppvActressRanking(limit: $limit, offset: $offset, filter: $filter) {\n    items {\n      id\n      rank\n      actress {\n        id\n        name\n        imageUrl\n        contentsCountOnSale\n        latestContent {\n          id\n          title\n          ... on PPVContentSummary {\n            releaseStatus\n            isExclusiveDelivery\n            pricing {\n              sale {\n                id\n                name\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        isBookmarked @include(if: $isLoggedIn)\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}",
+  "query": "query ActressRankingPage($limit: Int!, $offset: Int, $filter: PPVActressRankingFilterInput!, $shouldGetBookmark: Boolean!, $shouldGetLegacyBookmark: Boolean!) {\n  ppvActressRanking(limit: $limit, offset: $offset, filter: $filter) {\n    items {\n      id\n      rank\n      actress {\n        id\n        name\n        imageUrl\n        contentsCountOnSale\n        latestContent {\n          id\n          title\n          ... on PPVContentSummary {\n            releaseStatus\n            isExclusiveDelivery\n            pricing {\n              sale {\n                id\n                name\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        isFavorite @include(if: $shouldGetBookmark)\n        isBookmarked @include(if: $shouldGetLegacyBookmark)\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}",
   "variables": {
     "filter": {
       "monthly": {
         "floor": "AV"
       }
     },
-    "isLoggedIn": false,
     "limit": 100,
-    "offset": 0
+    "offset": 0,
+    "shouldGetBookmark": false,
+    "shouldGetLegacyBookmark": false
   }
 }
