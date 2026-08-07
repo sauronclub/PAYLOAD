@@ -62,6 +62,11 @@ def get_capture_configs() -> List[CaptureConfig]:
             operations=[constants.TARGET_OPERATIONNAME_MONTHLY_SERIES],
             filename="PAYLOAD_MONTHLY_SERIES.json"
         ),
+        CaptureConfig(
+            url=settings.TYPE_LATEST_RELEASE_URL,
+            operations=[constants.TARGET_OPERATIONNAME_LATEST_RELEASE],
+            filename="PAYLOAD_LATEST_RELEASE.json"
+        ),
     ]
 
 
