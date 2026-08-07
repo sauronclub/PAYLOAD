@@ -38,6 +38,7 @@ jobs:
           TYPE_MONTHLY_URL: ${{ secrets.TYPE_MONTHLY_URL }}
           TYPE_MONTHLY_ACTRESS_URL: ${{ secrets.TYPE_MONTHLY_ACTRESS_URL }}
           TYPE_MONTHLY_SERIES_URL: ${{ secrets.TYPE_MONTHLY_SERIES_URL }}
+          TYPE_LATEST_RELEASE_URL: ${{ secrets.TYPE_LATEST_RELEASE_URL }}
           GRAPHQL_API_URL: ${{ secrets.GRAPHQL_API_URL }}
           HEADER_KEY: ${{ secrets.HEADER_KEY }}
           HEADER_VALUE: ${{ secrets.HEADER_VALUE }}
