@@ -19,6 +19,8 @@ class Settings:
     TYPE_MONTHLY_URL: str = ""
     TYPE_MONTHLY_ACTRESS_URL: str = ""
     TYPE_MONTHLY_SERIES_URL: str = ""
+    TYPE_LATEST_RELEASE_URL: str = ""
+
     GRAPHQL_API_URL: str = ""
     HEADER_KEY: str = ""
     HEADER_VALUE: str = ""
@@ -32,6 +34,7 @@ class Settings:
         self.TYPE_DAILY_URL = os.getenv("TYPE_DAILY_URL", "")
         self.TYPE_WEEKLY_URL = os.getenv("TYPE_WEEKLY_URL", "")
         self.TYPE_MONTHLY_URL = os.getenv("TYPE_MONTHLY_URL", "")
+        self.TYPE_LATEST_RELEASE_URL = os.getenv("TYPE_LATEST_RELEASE_URL", "")
         self.TYPE_MONTHLY_ACTRESS_URL = os.getenv("TYPE_MONTHLY_ACTRESS_URL", "")
         self.TYPE_MONTHLY_SERIES_URL = os.getenv("TYPE_MONTHLY_SERIES_URL", "")
         self.GRAPHQL_API_URL = os.getenv("GRAPHQL_API_URL", "")
@@ -47,6 +50,7 @@ class Settings:
             "TYPE_DATE_URL": self.TYPE_DATE_URL,
             "TYPE_DAILY_URL": self.TYPE_DAILY_URL,
             "TYPE_WEEKLY_URL": self.TYPE_WEEKLY_URL,
+            "TYPE_LATEST_RELEASE_URL": self.TYPE_LATEST_RELEASE_URL,
             "TYPE_MONTHLY_URL": self.TYPE_MONTHLY_URL,
             "TYPE_MONTHLY_ACTRESS_URL": self.TYPE_MONTHLY_ACTRESS_URL,
             "TYPE_MONTHLY_SERIES_URL": self.TYPE_MONTHLY_SERIES_URL,
@@ -67,6 +71,7 @@ class Constants:
     TARGET_OPERATIONNAME_MONTHLY: str = "ContentRankingPage"
     TARGET_OPERATIONNAME_MONTHLY_ACTRESS: str = "ActressRankingPage"
     TARGET_OPERATIONNAME_MONTHLY_SERIES: str = "SeriesRankingPage"
+    TARGET_OPERATIONNAME_LATEST_RELEASE: str = "NewReleaseRankingPage"
 
     MAX_RETRY: int = 10
     RETRY_INTERVAL: int = 3
