@@ -5,25 +5,18 @@
     "excludeUndelivered": false,
     "facetLimit": 100,
     "filter": {
-      "actressIds": {
-        "ids": [
-          {
-            "id": "1087625"
-          }
-        ],
-        "op": "AND"
-      },
+      "deliveryStartDate": "2026-08-01",
       "isSaleItemsOnly": false
     },
     "floor": "AV",
     "guestToken": "",
-    "hasFacet": true,
+    "hasFacet": false,
     "hasGenreDescription": false,
     "hasLegacyProductType": false,
     "isLoggedIn": false,
     "limit": 120,
     "offset": 0,
-    "shouldFetchActressRelatedWords": true,
+    "shouldFetchActressRelatedWords": false,
     "shouldFetchDirectorRelatedWords": false,
     "shouldFetchGenreRelatedWords": false,
     "shouldFetchHistrionRelatedWords": false,
@@ -31,6 +24,6 @@
     "shouldFetchMakerRelatedWords": false,
     "shouldFetchSeriesRelatedWords": false,
     "shouldGetBookmark": false,
-    "sort": "RECOMMENDED"
+    "sort": "SALES_RANK_SCORE"
   }
 }
