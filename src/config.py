@@ -73,9 +73,9 @@ class Constants:
     TARGET_OPERATIONNAME_MONTHLY_SERIES: str = "SeriesRankingPage"
     TARGET_OPERATIONNAME_LATEST_RELEASE: str = "NewReleaseRankingPage"
 
-    MAX_RETRY: int = 10
+    MAX_RETRY: int = 3
     RETRY_INTERVAL: int = 3
-    WAIT_GRAPHQL: int = 30
+    WAIT_GRAPHQL: int = 3
 
     BROWSER_VIEWPORT: Dict = field(default_factory=lambda: {"width": 1280, "height": 800})
     BROWSER_USER_AGENT: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
